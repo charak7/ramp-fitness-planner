@@ -7,7 +7,7 @@
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "server": "nodemon --no-deprecation server/index.js",
     "client": "cd client && npm start",
-    "build": "cd client && npm run build",
+    "build": "echo 'Skipping root build; client build runs in CI'",
     "install-all": "npm install && cd client && npm install",
     "start": "node server/index.js"
   },
