@@ -43,9 +43,14 @@ jobs:
       env:
         CI: false
 
+    - name: Copy React build to server
+      run: |
+        mkdir -p server/public
+        cp -r client/build/* server/public/
+
     - name: Deploy to Azure Web App
       uses: azure/webapps-deploy@v3
       with:
         app-name: ${{ env.AZURE_WEBAPP_NAME }}
-        package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+        package: ./server
         publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
