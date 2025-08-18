@@ -16,6 +16,7 @@ const maskKey = (val) => {
   if (val.length <= 8) return '*'.repeat(val.length);
   return `${val.slice(0, 4)}...${val.slice(-4)}`;
 };
+console.log('[Config] Available ENV keys:', Object.keys(process.env).join(', '));
 console.log('[Config] .env path:', ENV_PATH, 'exists:', fs.existsSync(ENV_PATH));
 console.log('[Config] OPENROUTER_API_KEY present:', Boolean(process.env.OPENROUTER_API_KEY), 'preview:', maskKey(process.env.OPENROUTER_API_KEY));
 
