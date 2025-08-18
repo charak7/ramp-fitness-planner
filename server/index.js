@@ -4,9 +4,11 @@ const rateLimit = require('express-rate-limit');
 const axios = require('axios');
 const path = require('path');
 const fs = require('fs');
-// Ensure we load the .env from the project root regardless of CWD
+// Load environment variables from .env file only in development
 const ENV_PATH = path.resolve(__dirname, '..', '.env');
-require('dotenv').config({ path: ENV_PATH });
+if (fs.existsSync(ENV_PATH)) {
+  require('dotenv').config({ path: ENV_PATH });
+}
 
 // Debug: log environment loading status (without exposing secrets)
 const maskKey = (val) => {
