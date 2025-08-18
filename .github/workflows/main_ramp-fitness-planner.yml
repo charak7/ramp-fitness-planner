@@ -58,18 +58,21 @@ jobs:
         with:
           name: node-app
 
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+
+      - name: Set App Settings
+        uses: azure/CLI@v1
+        with:
+          inlineScript: |
+            az webapp config appsettings set --name ramp-fitness-planner --resource-group ramp-fitness-rg --settings "OPENROUTER_API_KEY=${{ secrets.OPENROUTER_API_KEY }}"
+
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
           package: .
-          app-settings: |
-            [
-              {
-                "name": "OPENROUTER_API_KEY",
-                "value": "${{ secrets.OPENROUTER_API_KEY }}",
-                "slotSetting": false
-              }
-            ]
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
           
