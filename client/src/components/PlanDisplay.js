@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { ArrowLeft, Download, Calendar, Target, Utensils, TrendingUp, AlertTriangle, Dumbbell, Info, CheckCircle, Trophy, Star, Zap, Clock, Users, Heart } from 'lucide-react';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from './ui/Card';
 import { Button } from './ui/Button';
 import { Badge } from './ui/Badge';
@@ -11,23 +13,63 @@ const PlanDisplay = ({ plan, onReset }) => {
   const [showRawResponse, setShowRawResponse] = useState(false);
   const [motivationalQuote, setMotivationalQuote] = useState('');
   const [isVisible, setIsVisible] = useState(false);
+  const planContentRef = useRef();
 
   useEffect(() => {
     setMotivationalQuote(generateMotivationalQuote());
     setIsVisible(true);
   }, []);
 
-  const downloadPlan = () => {
-    const planText = plan.rawResponse || JSON.stringify(plan, null, 2);
-    const blob = new Blob([planText], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'fitness-plan.txt';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+  const downloadPlan = async () => {
+    if (!planContentRef.current) return;
+
+    try {
+      // Temporarily hide buttons to avoid them appearing in the PDF
+      const buttons = planContentRef.current.querySelectorAll('button');
+      buttons.forEach(btn => btn.style.display = 'none');
+
+      // Capture the plan content as canvas
+      const canvas = await html2canvas(planContentRef.current, {
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: '#ffffff',
+        width: planContentRef.current.scrollWidth,
+        height: planContentRef.current.scrollHeight
+      });
+
+      // Create PDF
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      
+      const imgWidth = 210; // A4 width in mm
+      const pageHeight = 295; // A4 height in mm
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      let heightLeft = imgHeight;
+      let position = 0;
+
+      // Add first page
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+
+      // Add additional pages if needed
+      while (heightLeft >= 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+      }
+
+      // Save the PDF
+      pdf.save('fitness-plan.pdf');
+
+      // Restore buttons
+      buttons.forEach(btn => btn.style.display = '');
+
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      alert('Failed to generate PDF. Please try again.');
+    }
   };
 
   // Enhanced function to parse JSON from raw response
@@ -348,7 +390,7 @@ const PlanDisplay = ({ plan, onReset }) => {
   // If we have structured data, show the beautiful formatted view
   if (planData && (planData.goal || planData.weeklySchedule || planData.nutritionGuidelines)) {
     return (
-      <div className={`space-y-8 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+      <div ref={planContentRef} className={`space-y-8 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
         {/* Header with actions */}
         <Card className="bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200">
           <CardContent className="p-6">
@@ -367,14 +409,16 @@ const PlanDisplay = ({ plan, onReset }) => {
                   onClick={downloadPlan}
                   variant="outline"
                   className="flex items-center"
+                  data-download-button
                 >
                   <Download className="w-4 h-4 mr-2" />
-                  Download Plan
+                  Download PDF
                 </Button>
                 <Button
                   onClick={onReset}
                   variant="secondary"
                   className="flex items-center"
+                  data-new-plan-button
                 >
                   <ArrowLeft className="w-4 h-4 mr-2" />
                   Create New Plan
