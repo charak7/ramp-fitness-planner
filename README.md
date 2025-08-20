@@ -1,13 +1,13 @@
 # RAMP Fitness Planner
 
-A modern, AI-powered fitness planning application built with React, Tailwind CSS, and Node.js/Express. The app generates personalized fitness plans using DeepSeek's AI model.
+A modern, AI-powered fitness planning application built with React, Tailwind CSS, and Node.js/Express. The app generates personalized fitness plans using OpenRouter's AI models.
 
 ## Features
 
 - **Clean, Modern UI**: Beautiful React + Tailwind CSS interface
 - **Goal Selection**: Choose between Gain Muscle, Lose Fat, or Both
 - **Comprehensive Inputs**: Equipment access, schedule, experience level, injuries, preferences, and dietary notes
-- **AI-Powered Plans**: DeepSeek integration for personalized fitness recommendations
+- **AI-Powered Plans**: OpenRouter integration for personalized fitness recommendations
 - **Structured Output**: JSON-first response with human-readable fallback
 - **Plan Display**: Organized tabs for overview, weekly schedule, nutrition, and progression
 - **Download Plans**: Export your fitness plan as JSON
@@ -18,7 +18,7 @@ A modern, AI-powered fitness planning application built with React, Tailwind CSS
 
 ### Backend
 - **Node.js** with **Express.js**
-- **DeepSeek API** integration (OpenAI-compatible)
+- **OpenRouter API** integration (OpenAI-compatible)
 - **Rate limiting** and **CORS** support
 - **Input validation** middleware
 
@@ -32,7 +32,7 @@ A modern, AI-powered fitness planning application built with React, Tailwind CSS
 
 - Node.js 16+ 
 - npm or yarn
-- DeepSeek API key
+- OpenRouter API key
 
 ## Installation
 
@@ -52,24 +52,24 @@ A modern, AI-powered fitness planning application built with React, Tailwind CSS
    # Copy the example environment file
    cp env.example .env
    
-   # Edit .env with your DeepSeek API key
-   DEEPSEEK_API_KEY=your_actual_api_key_here
+   # Edit .env with your OpenRouter API key
+   OPENROUTER_API_KEY=your_actual_api_key_here
    ```
 
 ## Configuration
 
-### DeepSeek API Setup
+### OpenRouter API Setup
 
-1. Get your API key from [DeepSeek](https://platform.deepseek.com/)
+1. Get your API key from [OpenRouter](https://openrouter.ai/)
 2. Add it to your `.env` file:
    ```
-   DEEPSEEK_API_KEY=your_api_key_here
+   OPENROUTER_API_KEY=your_api_key_here
    ```
 
 ### Environment Variables
 
-- `DEEPSEEK_API_KEY`: Your DeepSeek API key (required)
-- `DEEPSEEK_API_URL`: DeepSeek API endpoint (defaults to production)
+- `OPENROUTER_API_KEY`: Your OpenRouter API key (required)
+- `OPENROUTER_API_URL`: OpenRouter API endpoint (defaults to production)
 - `PORT`: Server port (defaults to 5000)
 
 ## Running the Application
@@ -137,7 +137,7 @@ Generates a personalized fitness plan based on user inputs.
 ```
 ramp-fitness-planner/
 ├── server/
-│   └── index.js              # Express server with DeepSeek integration
+│   └── index.js              # Express server with OpenRouter integration
 ├── client/
 │   ├── public/
 │   │   └── index.html        # Main HTML file
@@ -199,7 +199,7 @@ ramp-fitness-planner/
 ### Common Issues
 
 1. **API Key Errors**
-   - Ensure your DeepSeek API key is correct
+   - Ensure your OpenRouter API key is correct
    - Check that the `.env` file is in the root directory
 
 2. **Port Conflicts**
@@ -235,7 +235,7 @@ For issues and questions:
 
 ---
 
-**Note**: This application requires a valid DeepSeek API key to function. The AI-generated plans are for informational purposes and should not replace professional medical or fitness advice.
+**Note**: This application requires a valid OpenRouter API key to function. The AI-generated plans are for informational purposes and should not replace professional medical or fitness advice.
 
 
 
