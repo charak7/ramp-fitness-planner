@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ArrowLeft, Download, Calendar, Target, Utensils, TrendingUp, AlertTriangle, Dumbbell, Info, CheckCircle, Trophy, Star, Zap, Clock, Users, Heart } from 'lucide-react';
+import { ArrowLeft, Download, Calendar, Target, Utensils, TrendingUp, AlertTriangle, Dumbbell, Info, CheckCircle, Trophy } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from './ui/Card';
@@ -9,14 +9,11 @@ import { Progress } from './ui/Progress';
 import { generateMotivationalQuote } from '../lib/utils';
 
 const PlanDisplay = ({ plan, onReset }) => {
-  const [activeTab, setActiveTab] = useState('overview');
   const [showRawResponse, setShowRawResponse] = useState(false);
-  const [motivationalQuote, setMotivationalQuote] = useState('');
   const [isVisible, setIsVisible] = useState(false);
   const planContentRef = useRef();
 
   useEffect(() => {
-    setMotivationalQuote(generateMotivationalQuote());
     setIsVisible(true);
   }, []);
 

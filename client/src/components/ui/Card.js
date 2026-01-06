@@ -22,13 +22,20 @@ const CardHeader = React.forwardRef(({ className, ...props }, ref) => (
 ));
 CardHeader.displayName = "CardHeader";
 
-const CardTitle = React.forwardRef(({ className, ...props }, ref) => (
-  <h3
-    ref={ref}
-    className={cn("font-semibold leading-none tracking-tight text-gray-900", className)}
-    {...props}
-  />
-));
+const CardTitle = React.forwardRef(({ className, children, ...props }, ref) => {
+  // Only render if there are children to avoid empty heading issues
+  if (!children) return null;
+  
+  return (
+    <h3
+      ref={ref}
+      className={cn("font-semibold leading-none tracking-tight text-gray-900", className)}
+      {...props}
+    >
+      {children}
+    </h3>
+  );
+});
 CardTitle.displayName = "CardTitle";
 
 const CardDescription = React.forwardRef(({ className, ...props }, ref) => (
