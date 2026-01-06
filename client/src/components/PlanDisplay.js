@@ -2,11 +2,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import { ArrowLeft, Download, Calendar, Target, Utensils, TrendingUp, AlertTriangle, Dumbbell, Info, CheckCircle, Trophy, Heart } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
-import { Card, CardHeader, CardTitle, CardContent, CardDescription } from './ui/Card';
+import { Card, CardContent } from './ui/Card';
 import { Button } from './ui/Button';
-import { Badge } from './ui/Badge';
-import { Progress } from './ui/Progress';
-import { generateMotivationalQuote } from '../lib/utils';
+
 
 const PlanDisplay = ({ plan, onReset }) => {
   const [showRawResponse, setShowRawResponse] = useState(false);
