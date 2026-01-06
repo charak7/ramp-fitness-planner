@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ArrowLeft, Download, Calendar, Target, Utensils, TrendingUp, AlertTriangle, Dumbbell, Info, CheckCircle, Trophy } from 'lucide-react';
+import { ArrowLeft, Download, Calendar, Target, Utensils, TrendingUp, AlertTriangle, Dumbbell, Info, CheckCircle, Trophy, Heart } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from './ui/Card';
