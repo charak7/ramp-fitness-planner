@@ -329,14 +329,27 @@ app.get('/api/debug-config', (req, res) => {
   });
 });
 
-// Serve static files from the React app
-app.use(express.static(path.join(__dirname, 'public')));
+// Determine if running in App Engine
+const isAppEngine = Boolean(process.env.GAE_SERVICE || process.env.GOOGLE_CLOUD_PROJECT);
 
-// The "catchall" handler: for any request that doesn't
-// match one above, send back React's index.html file.
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
+if (isAppEngine) {
+  // In App Engine, serve static files from the public directory (after build-script.js copies client/build there)
+  app.use(express.static(path.join(__dirname, 'public')));
+  
+  // Serve index.html for non-API routes to support React Router
+  app.get(/^(?!\/api\/).*$/, (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  });
+} else {
+  // For local development and other environments
+  app.use(express.static(path.join(__dirname, 'public')));
+  
+  // The "catchall" handler: for any request that doesn't
+  // match one above, send back React's index.html file.
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  });
+}
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
@@ -344,7 +357,24 @@ app.get('/api/health', (req, res) => {
 });
 
 // Start server
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
   console.log(`Health check: http://localhost:${PORT}/api/health`);
+  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`OpenRouter API URL: ${OPENROUTER_API_URL}`);
+});
+
+// Graceful shutdown handling for Google Cloud
+process.on('SIGTERM', () => {
+  console.log('SIGTERM received, shutting down gracefully');
+  server.close(() => {
+    console.log('Process terminated');
+  });
+});
+
+process.on('SIGINT', () => {
+  console.log('SIGINT received, shutting down gracefully');
+  server.close(() => {
+    console.log('Process terminated');
+  });
 });

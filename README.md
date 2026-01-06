@@ -226,6 +226,57 @@ ramp-fitness-planner/
 
 MIT License - see LICENSE file for details
 
+## Deployment Options
+
+### Google Cloud Platform
+
+The application can be deployed to Google Cloud Platform using several methods:
+
+#### Option 1: Google Cloud Run (Recommended)
+
+1. Install Google Cloud SDK: [https://cloud.google.com/sdk/docs/install](https://cloud.google.com/sdk/docs/install)
+2. Authenticate with your Google Cloud account:
+   ```bash
+   gcloud auth login
+   gcloud config set project YOUR_PROJECT_ID
+   ```
+3. Enable required APIs:
+   ```bash
+   gcloud services enable run.googleapis.com
+   gcloud services enable containerregistry.googleapis.com
+   ```
+4. Deploy using the provided script or manually:
+   ```bash
+   gcloud run deploy ramp-fitness-planner \
+     --source . \
+     --platform managed \
+     --region us-central1 \
+     --allow-unauthenticated \
+     --set-env-vars OPENROUTER_API_KEY=your_api_key_here,NODE_ENV=production
+   ```
+
+#### Option 2: Google App Engine
+
+1. Update the `app.yaml` file with your API key
+2. Run the deployment command:
+   ```bash
+   gcloud app deploy
+   ```
+
+#### Option 3: GitHub Actions Deployment
+
+1. Set up your Google Cloud service account and download the JSON key file
+2. Add the following secrets to your GitHub repository:
+   - `GCP_CREDENTIALS`: The content of your service account JSON key file
+   - `OPENROUTER_API_KEY`: Your OpenRouter API key
+3. Push your code to GitHub - the deployment will happen automatically
+
+For detailed deployment instructions, see the [GCP Deployment Guide](gcp-deployment-guide.md).
+
+### Azure (Original)
+
+The application was originally configured for Azure deployment. For Azure deployment instructions, see the [Azure Deployment Guide](azure-deployment-guide.md).
+
 ## Support
 
 For issues and questions:
@@ -236,6 +287,9 @@ For issues and questions:
 ---
 
 **Note**: This application requires a valid OpenRouter API key to function. The AI-generated plans are for informational purposes and should not replace professional medical or fitness advice.
+
+
+
 
 
 

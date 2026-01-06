@@ -1,0 +1,36 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: ramp-fitness-planner
+spec:
+  template:
+    spec:
+      containers:
+      - image: gcr.io/YOUR_PROJECT_ID/ramp-fitness-planner
+        env:
+        - name: NODE_ENV
+          value: "production"
+        - name: OPENROUTER_API_KEY
+          value: "YOUR_API_KEY_HERE"
+        - name: PORT
+          value: "8080"
+        resources:
+          limits:
+            memory: "512Mi"
+            cpu: "1"
+        livenessProbe:
+          httpGet:
+            path: /api/health
+          initialDelaySeconds: 60
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /api/health
+          initialDelaySeconds: 30
+          periodSeconds: 5
+      containerConcurrency: 80
+      timeoutSeconds: 300
+  traffic:
+  - percent: 100
+    latestRevision: true
+status: {}

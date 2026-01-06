@@ -1,0 +1,85 @@
+name: Deploy to Google Cloud Run
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+env:
+  PROJECT_ID: YOUR_PROJECT_ID  # Replace with your Google Cloud Project ID
+  SERVICE_NAME: ramp-fitness-planner
+  REGION: us-central1
+  NODE_VERSION: '18'
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+        cache-dependency-path: |
+          package-lock.json
+          client/package-lock.json
+
+    - name: Install server dependencies
+      run: npm ci
+
+    - name: Install client dependencies
+      run: npm ci
+      working-directory: client
+
+    - name: Build React app
+      run: npm run build
+      working-directory: client
+      env:
+        CI: false
+
+    - name: Build and copy React app to server
+      run: npm run build
+
+    # Authenticate to Google Cloud
+    - name: Authenticate to Google Cloud
+      uses: google-github-actions/auth@v2
+      with:
+        credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+
+    # Setup Google Cloud CLI
+    - name: Setup Google Cloud CLI
+      uses: google-github-actions/setup-gcloud@v2
+      with:
+        project_id: ${{ env.PROJECT_ID }}
+
+    # Enable APIs
+    - name: Enable APIs
+      run: |
+        gcloud services enable run.googleapis.com
+        gcloud services enable containerregistry.googleapis.com
+
+    # Build and deploy to Cloud Run
+    - name: Deploy to Cloud Run
+      run: |
+        gcloud run deploy ${{ env.SERVICE_NAME }} \
+          --source . \
+          --platform managed \
+          --region ${{ env.REGION }} \
+          --allow-unauthenticated \
+          --set-env-vars "NODE_ENV=production,PORT=8080" \
+          --set-secrets "OPENROUTER_API_KEY=OPENROUTER_API_KEY:latest" \
+          --memory 512Mi \
+          --cpu 1
+
+    # Output the URL of the deployed service
+    - name: Show Service URL
+      run: |
+        echo "Service deployed at: $(gcloud run services describe ${{ env.SERVICE_NAME }} --region ${{ env.REGION }} --format 'value(status.url)')"

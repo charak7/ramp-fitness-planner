@@ -1,0 +1,10 @@
+runtime: nodejs18
+
+env_variables:
+  OPENROUTER_API_KEY: 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
+  NODE_ENV: production
+
+automatic_scaling:
+  min_instances: 0
+  max_instances: 10
+  target_cpu_utilization: 0.6
