@@ -228,6 +228,18 @@ MIT License - see LICENSE file for details
 
 ## Deployment Options
 
+### Vercel (Recommended)
+
+The application is configured for easy deployment on Vercel:
+
+1. Sign up for a free account at [vercel.com](https://vercel.com)
+2. Install the Vercel CLI: `npm install -g vercel`
+3. Navigate to your project directory and run: `vercel`
+4. Follow the prompts and set your environment variables:
+   - `OPENROUTER_API_KEY`: Your OpenRouter API key
+
+Alternatively, connect your Git repository to Vercel for automatic deployments.
+
 ### Google Cloud Platform
 
 The application can be deployed to Google Cloud Platform using several methods:
